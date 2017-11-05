@@ -4,7 +4,7 @@ LABEL maintainer="nyker <nykergoto@gmail.com>"
 
 # add update
 RUN apt-get update
-RUN apt-get install -y sudo git zsh openssh-server wget gcc
+RUN apt-get install -y sudo git zsh openssh-server wget gcc libatlas-base-dev
 
 # sshでの接続設定
 RUN mkdir /var/run/sshd
@@ -37,13 +37,12 @@ RUN pyenv rehash
 RUN pyenv global anaconda3-5.0.1
 
 # mxnet
-RUN sudo apt-get install libatlas-base-dev
 RUN pip install mxnet-cu80
 
 # keras
 RUN pip install keras==2.0.9 tensorflow-gpu
 
 # peco
-RUN wget wget https://github.com/peco/peco/releases/download/v0.5.0/peco_linux_amd64.tar.gz
+RUN wget https://github.com/peco/peco/releases/download/v0.5.0/peco_linux_amd64.tar.gz
 RUN tar -zxvf peco_linux_amd64.tar.gz
 ENV PATH ${HOME}/peco_linux_amd64/:${PATH}

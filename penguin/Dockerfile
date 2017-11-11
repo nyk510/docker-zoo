@@ -10,6 +10,7 @@ RUN apt-get install -y sudo git zsh openssh-server wget gcc libatlas-base-dev
 
 # userの追加
 RUN groupadd -g 1000 developer
+
 # user:penguin, password:highway
 RUN useradd -g developer -G sudo -m -s /bin/bash penguin
 RUN echo "penguin:highway" | chpasswd

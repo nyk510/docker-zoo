@@ -2,31 +2,28 @@ FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 LABEL maintainer="nyker <nykergoto@gmail.com>"
 
-# add update
+# update
 RUN apt-get update
-RUN apt-get install -y sudo git zsh openssh-server wget gcc libatlas-base-dev
 
-# sshでの接続設定
-RUN mkdir /var/run/sshd
-RUN echo 'root:root' | chpasswd
-RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
-EXPOSE 22
-CMD    ["/usr/sbin/sshd", "-D"]
+# install utilities
+RUN apt-get install -y sudo git zsh openssh-server wget gcc libatlas-base-dev
 
 # userの追加
 RUN groupadd -g 1000 developer
-RUN useradd -g developer -G sudo -m -s /bin/zsh developer
-RUN echo "developer:hogehoge" | chpasswd
+# user:penguin, password:highway
+RUN useradd -g developer -G sudo -m -s /bin/bash penguin
+RUN echo "penguin:highway" | chpasswd
 
-# 以下はユーザーでの操作
-USER developer
-WORKDIR /home/developer/
+# 以下は penguin での操作
+USER penguin
+WORKDIR /home/penguin/
 
+# docker build のディレクトリにあるファイル (.) を, カレントディレクトリ (`./`) にコピー
 ADD . ./
+
 # pyenv
 RUN git clone git://github.com/yyuu/pyenv.git .pyenv
-ENV HOME /home/developer
+ENV HOME /home/penguin
 ENV PYENV_ROOT ${HOME}/.pyenv
 ENV PATH ${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}
 

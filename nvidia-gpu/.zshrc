@@ -4,7 +4,6 @@ local YELLOW=$'%{\e[1;33m%}'
 local BLUE=$'%{\e[1;34m%}'
 local DEFAULT=$'%{\e[1;m%}'
 
-# PROMPT=$'\n'$GREEN'%n '$YELLOW'%~ '$'\n'$DEFAULT'%(!.#.$) '
 PROMPT="[%n@%m %~]%(!.#.$) "
 export PATH=$PATH:~/peco_linux_amd64
 
@@ -22,18 +21,13 @@ setopt pushd_ignore_dups
 export LSCOLORS=gxfxcxdxbxegedabagacad
 alias ls='ls --color=auto'
 
-#かっこいい補完を導入する
-#source .zsh/plugin/incr*.zsh
-#大文字小文字の区別をなしにする
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
 
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
-
 
 # 補完
 autoload -U compinit

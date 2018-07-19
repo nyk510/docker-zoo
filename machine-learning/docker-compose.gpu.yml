@@ -1,0 +1,30 @@
+version: '2.3'
+services:
+  santander:
+    image: machine-learning-gpu
+    container_name: ${CONTAINER_NAME}
+    runtime: nvidia
+    ports:
+      - ${JUPYTER_PORT}:8888
+    volumes:
+      - ./:/home
+      - ./data:/data
+      # bind keras application weights
+      - ./.keras/:/root/.keras
+      # share kaggle features
+      - ~/.kaggle/:/root/.kaggle
+      # apply your local custom.css
+      - ./.jupyter/custom:/root/.jupyter/custom
+    environment:
+     - COMPETITION_NAME=santander-value-prediction-challenge
+     # root のホームディレクトリに python の path を通すことで
+     # プロジェクトルートに配置した自作のモジュールを import できるようにしている
+     - PYTHONPATH=/home/
+    env_file: .env
+    command: >
+      /bin/bash -c "
+        pip install -r requirements.txt 
+        kaggle competitions download -c $${COMPETITION_NAME} 
+        unzip -n /root/.kaggle/competitions/$${COMPETITION_NAME}/train.csv.zip -d ./data/raw 
+        unzip -n /root/.kaggle/competitions/$${COMPETITION_NAME}/test.csv.zip -d ./data/raw 
+        jupyter notebook --ip 0.0.0.0 --allow-root"

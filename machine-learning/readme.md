@@ -44,3 +44,27 @@ Server:
 ```bash
 docker build -t machine-learning-gpu ./docker/gpu/
 ```
+
+次に env ファイルを作成します
+
+```bash
+cp sample.env .env
+```
+
+env ファイル内では jupyter のポート番号とコンテナの名前を設定します。
+
+最期に gpu 用の compose ファイルをコピーしてコンテナを起動します
+
+```bash
+cp docker-compose.gpu.yml docker-compose.yml
+docker-compose up -d
+```
+
+デフォルトならば [localhost ポート番号 4000](http://localhost:4000/tree?) にサーバーが立ち上がります
+
+> ちなみに compose ファイルは santander コンペ仕様になっているので jupyter で開いたルートディレクトリの data には santander のデータセットが保存されています
+
+### 注意
+
+この compose ファイル及び docker image は本番利用しないでください。  
+コンテナ内部のユーザーが root のままになっていますので乗っ取られた場合それなりのリスクです。

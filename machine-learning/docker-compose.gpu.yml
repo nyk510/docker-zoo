@@ -2,10 +2,10 @@ version: '2.3'
 services:
   santander:
     image: machine-learning-gpu
-    container_name: "santander"
+    container_name: ${CONTAINER_NAME}
     runtime: nvidia
     ports:
-      - '7000:8888'
+      - ${JUPYTER_PORT}:8888
     volumes:
       - ./:/home
       - ./data:/data
@@ -20,6 +20,7 @@ services:
      # root のホームディレクトリに python の path を通すことで
      # プロジェクトルートに配置した自作のモジュールを import できるようにしている
      - PYTHONPATH=/home/
+    env_file: .env
     command: >
       /bin/bash -c "
         pip install -r requirements.txt 

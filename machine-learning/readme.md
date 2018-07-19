@@ -36,7 +36,40 @@ Server:
   Experimental: false
 ```
 
-## Usage for gpu
+## Usage
+
+~ つかいかた
+
+### CPU Version
+
+以下のライブラリがインストールされた環境が構築されます
+
+* python
+  * miniconda3-4.1.11
+* packages:
+  * xgboost
+  * lightGBM
+  * jupyter
+  * notebook
+  * tqdm
+  * matplotlib
+  * numpy
+  * scipy
+  * scikit-learn
+  * pandas
+  * numba
+
+### GPU Version
+
+> note: compose を動かすためには `nvidia-docker2` が必要です。
+
+GPUバージョンは基本的にCPUと同じですが
+
+* lightGBM
+* xgboost
+* keras (backend: tensorflow-gpu)
+
+の各ライブラリが GPU 対応となります。
 
 まずイメージを build します. yml 内では gpu の image は `machine-learning-gpu` となっているため以下のコマンドもそれに合わせています。
 この名前は好きなように変更してください。

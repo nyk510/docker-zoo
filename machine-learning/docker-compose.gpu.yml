@@ -11,9 +11,10 @@ services:
       - ./data:/data
       # bind keras application weights
       - ./.keras/:/root/.keras
+      # share kaggle features
       - ~/.kaggle/:/root/.kaggle
       # apply your local custom.css
-      - ~/.jupyter/custom:/root/.jupyter/custom
+      - ./.jupyter/custom:/root/.jupyter/custom
     environment:
      - COMPETITION_NAME=santander-value-prediction-challenge
      # root のホームディレクトリに python の path を通すことで

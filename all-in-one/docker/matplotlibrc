@@ -194,7 +194,7 @@ backend      : Agg
 # font.family         : IPAGothic
 font.style          : normal
 #font.variant        : normal
-font.weight         : 600
+font.weight         : 400
 #font.stretch        : normal
 ## note that font.size controls default text sizes.  To configure
 ## special text sizes tick labels, axes, labels, title, etc, see the rc
@@ -288,11 +288,11 @@ font.sans-serif     : Noto Sans CJK JP, DejaVu Sans, Bitstream Vera Sans, Comput
 #axes.grid.axis      : both    ## which axis the grid should apply to
 #axes.grid.which     : major   ## gridlines at major, minor or both ticks
 #axes.titlesize      : large   ## fontsize of the axes title
-#axes.titleweight    : normal  ## font weight of title
+axes.titleweight    : 400  ## font weight of title
 #axes.titlepad       : 6.0     ## pad between axes and title in points
 #axes.labelsize      : medium  ## fontsize of the x any y labels
 #axes.labelpad       : 4.0     ## space between label and axis
-#axes.labelweight    : normal  ## weight of the x and y labels
+axes.labelweight    : 400  ## weight of the x and y labels
 #axes.labelcolor     : k
 #axes.axisbelow      : line    ## draw axis gridlines and ticks below
                                ## patches (True); above patches but below
@@ -426,9 +426,9 @@ font.sans-serif     : Noto Sans CJK JP, DejaVu Sans, Bitstream Vera Sans, Comput
 #### FIGURE
 ## See http://matplotlib.org/api/figure_api.html#matplotlib.figure.Figure
 #figure.titlesize : large      ## size of the figure title (Figure.suptitle())
-#figure.titleweight : normal   ## weight of the figure title
+figure.titleweight : 600   ## weight of the figure title
 #figure.figsize   : 6.4, 4.8   ## figure size in inches
-#figure.dpi       : 100        ## figure dots per inch
+figure.dpi       : 150        ## figure dots per inch
 #figure.facecolor : w      ## figure facecolor; 0.75 is scalar gray
 #figure.edgecolor : w      ## figure edgecolor
 #figure.frameon : True          ## enable figure frame
@@ -517,7 +517,7 @@ font.sans-serif     : Noto Sans CJK JP, DejaVu Sans, Bitstream Vera Sans, Comput
 ## the default savefig params can be different from the display params
 ## e.g., you may want a higher resolution, or to make the figure
 ## background white
-#savefig.dpi         : figure   ## figure dots per inch or 'figure'
+savefig.dpi         : 150   ## figure dots per inch or 'figure'
 #savefig.facecolor   : w        ## figure facecolor when saving
 #savefig.edgecolor   : w        ## figure edgecolor when saving
 #savefig.format      : png      ## png, ps, pdf, svg

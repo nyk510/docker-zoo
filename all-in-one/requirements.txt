@@ -1,0 +1,21 @@
+jupyter
+notebook
+tqdm
+matplotlib
+numpy
+scipy
+scikit-learn
+pandas
+numba
+xgboost
+opencv-python
+seaborn
+lightgbm
+python-dotenv
+
+# Connect to mysql server
+mysqlclient
+
+# NLP Tools
+mecab-python3
+gensim

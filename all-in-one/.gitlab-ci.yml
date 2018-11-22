@@ -3,7 +3,8 @@ services:
   - docker:dind
 
 variables:
-  IMAGE_NAME: "registry.gitlab.com/atma_inc/${CI_PROJECT_NAME}"
+  USER_NAME: "your_user_name"
+  IMAGE_NAME: "registry.gitlab.com/${USER_NAME}/${CI_PROJECT_NAME}"
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY

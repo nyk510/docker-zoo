@@ -1,0 +1,21 @@
+image: docker:git
+services:
+  - docker:dind
+
+variables:
+  IMAGE_NAME: "registry.gitlab.com/atma_inc/${CI_PROJECT_NAME}"
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    # Build
+    - docker build -t ${IMAGE_NAME}:latest -f ./docker/Dockerfile .
+    - docker push ${IMAGE_NAME}:latest
+  only:
+    - master

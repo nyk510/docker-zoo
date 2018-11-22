@@ -1,0 +1,20 @@
+version: '2.3'
+services:
+  jupyter:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    image: all-in-one-cpu
+    container_name: all-in-one-jupyter
+    ports:
+      - 6001:8888
+    volumes:
+      - ./:/code
+      # apply your local custom.css
+      - ./docker/jupyter-custom.css:/home/penguin/.jupyter/custom/custom.css
+      # js font matplotlib
+      - ./docker/matplotlibrc:/opt/conda/lib/python3.5/site-packages/matplotlib/mpl-data/matplotlibrc
+    environment:
+     # workingdir に python の path を通すことで
+     # プロジェクトルートに配置した自作のモジュールを import できるようにしている
+     - PYTHONPATH=/code

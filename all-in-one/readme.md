@@ -1,6 +1,6 @@
 # All In One
 
-解析ツール + NLP Tool(Mecab) + Noto Font
+miniconda(python3) + 解析ツール + NLP Tool(Mecab) + Noto Font
 
 ## Quick Start
 

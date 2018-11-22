@@ -43,7 +43,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-# Install miniconda dir and add path
+# set miniconda dir path
 ENV CONDA_DIR /opt/conda
 ENV PATH ${CONDA_DIR}/bin:${PATH}
 
@@ -69,7 +69,7 @@ RUN git clone --recursive https://github.com/Microsoft/LightGBM && \
 ADD requirements.txt requirements.txt
 RUN pip install -U pip && pip install -r requirements.txt
 
-# install note fonts
+# install NOTO fonts
 # use apt-get install note-fonts, matplotlib can't catch these fonts
 # so install from source zip file
 # see: http://mirai-tec.hatenablog.com/entry/2018/04/17/004343

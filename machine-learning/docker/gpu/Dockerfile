@@ -1,31 +1,42 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 
 LABEL maintainer="nyker <nykergoto@gmail.com>"
-ENV jupyter_token=dolphin
+
+ARG JUPYTER_PASSWORD="dolphin"
+ARG USER_NAME="penguin"
+ARG USER_PASSWORD="highway"
 
 RUN apt-get update && \
   apt-get install -y \
-  build-essential \
-  curl \
-  wget \
-  bzip2 \
+  bzip2 \ 
   ca-certificates \
   libglib2.0-0 \
   libxext6 \
   libsm6 \
   libxrender1 \
-  git \
-  vim \
   mercurial \
   subversion \
-  cmake \
+  zsh \
+  sudo \
+  openssh-server \
+  gcc \
+  g++ \
+  git \
+  libatlas-base-dev \
   libboost-dev \
   libboost-system-dev \
   libboost-filesystem-dev \
-  gcc \
-  g++ \
+  curl \
+  wget \
+  make \
+  unzip \
+  # favorite editor
   nano \
-  unzip
+  # MeCab
+  swig mecab libmecab-dev mecab-ipadic-utf8 \
+  cmake --fix-missing
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
@@ -35,22 +46,20 @@ ENTRYPOINT [ "/usr/bin/tini", "--" ]
 # install miniconda
 ENV CONDA_DIR /opt/conda
 ENV PATH ${CONDA_DIR}/bin:${PATH}
-
-RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.4.10-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p ${CONDA_DIR} && \
-    rm ~/miniconda.sh && \
-    echo "export PATH=/opt/conda/bin:${PATH}" >> ~/.bash_profile
-
-# jupyter settings password and browser
-RUN mkdir ~/.jupyter
-RUN echo "c.NotebookApp.open_browser = False\n\
-c.NotebookApp.ip = '*'\n\
-c.NotebookApp.token = '${jupyter_token}'" | tee -a ${HOME}/.jupyter/jupyter_notebook_config.py
-
-WORKDIR /home
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.5.12-Linux-x86_64.sh -O ~/miniconda.sh && \
+  /bin/bash ~/miniconda.sh -b -p ${CONDA_DIR} && \
+  rm ~/miniconda.sh
 
 # install requirements
-RUN conda update conda
+RUN conda update conda && \
+  conda install -y \
+  numpy \
+  scipy \
+  scikit-learn \
+  # pytorch
+  pytorch \
+  torchvision \
+  cudatoolkit=9.0 -c pytorch
 
 # install Xgboost with GPU Support
 RUN git clone --recursive https://github.com/dmlc/xgboost && \
@@ -61,7 +70,7 @@ RUN git clone --recursive https://github.com/dmlc/xgboost && \
 
 # Add OpenCL ICD files for LightGBM
 RUN mkdir -p /etc/OpenCL/vendors && \
-    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
+  echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
 
 # install lightGBT with GPU Support
 RUN git clone --recursive https://github.com/Microsoft/LightGBM &&\
@@ -71,24 +80,54 @@ RUN git clone --recursive https://github.com/Microsoft/LightGBM &&\
   cd ../python-package/&&\
   python setup.py install --precompile
 
-RUN pip install --upgrade pip
-
-# install tensorflow
-# ver1.9 CUDA=9.0 and CUDNN=7.0
-RUN pip install tensorflow-gpu==1.8.0
-
 # other packages
-ADD requirements.txt requirements.txt
+ADD docker/gpu/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-
-# additional packages
-RUN conda install jupyter notebook
-
-EXPOSE 8888
 
 # 後片付け
 RUN apt-get autoremove -y && apt-get clean && \
   conda clean -i -l -t -y && \
   rm -rf /usr/local/src/*
 
-CMD [ "jupyter", "notebook", "--ip", "0.0.0.0", "--allow-root" ]
+# install peco
+RUN wget https://github.com/peco/peco/releases/download/v0.5.3/peco_linux_amd64.tar.gz -O ~/peco.tar.gz && \
+  tar -zxvf ~/peco.tar.gz && \
+  cp peco_linux_amd64/peco /usr/bin && \
+  rm ~/peco.tar.gz
+
+# install note fonts
+# use apt-get install note-fonts, matplotlib can't catch these fonts
+# so install from source zip file
+# see: http://mirai-tec.hatenablog.com/entry/2018/04/17/004343
+ENV NOTO_DIR /usr/share/fonts/opentype/notosans
+RUN mkdir -p ${NOTO_DIR} &&\
+  wget -q https://noto-website-2.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip -O noto.zip &&\
+  unzip ./noto.zip -d ${NOTO_DIR}/ &&\
+  chmod a+r ${NOTO_DIR}/NotoSans* &&\
+  rm ./noto.zip
+
+# user をルートユーザーから切り替えます
+# ユーザー名とパスワードは arg を使って切り替えることが出来ます (このファイルの先頭を参照)
+RUN groupadd -g 1000 developer &&\
+  useradd -g developer -G sudo -m -s /bin/bash ${USER_NAME} &&\
+  echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd
+
+RUN apt-get install gawk -y
+USER ${USER_NAME}
+
+# jupyter の config ファイルの作成
+RUN mkdir ~/.jupyter &&\
+  echo "c.NotebookApp.open_browser = False\n\
+c.NotebookApp.ip = '*'\n\
+c.NotebookApp.token = '${JUPYTER_PASSWORD}'" | tee -a ${HOME}/.jupyter/jupyter_notebook_config.py
+
+ADD docker/jupyter-custom.css /home/${USER_NAME}/.jupyter/custom/custom.css
+ADD docker/matplotlibrc ${CONDA_DIR}/lib/python3.7/site-packages/matplotlib/mpl-data/matplotlibrc
+
+RUN curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh && \
+  wget https://raw.githubusercontent.com/nyk510/dotfiles/master/.zshrc -O ~/.zshrc
+
+WORKDIR /workdir
+EXPOSE 8888
+
+CMD [ "jupyter", "notebook", "--ip=0.0.0.0", "--port=8888"]

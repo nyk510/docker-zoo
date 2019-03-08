@@ -1,10 +1,33 @@
 jupyter
 notebook
+tornado==5.1.1
+
+# core
 tqdm
+pytest
+
 matplotlib
+seaborn
+
 numpy
-scipy
-scikit-learn
-pandas
 numba
+scipy
+pandas
+scikit-learn
+xgboost
+lightgbm
+
+# parameter search
+optuna
+
+# vision
+opencv-python
+
+# deep leraning
+tensorflow-gpu
 keras
+
+# NLP Tools
+mecab-python3
+gensim
+pandas-profiling

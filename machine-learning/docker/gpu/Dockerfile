@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 
 LABEL maintainer="nyker <nykergoto@gmail.com>"
 
@@ -75,7 +75,7 @@ RUN mkdir -p /etc/OpenCL/vendors && \
 # install lightGBT with GPU Support
 RUN git clone --recursive https://github.com/Microsoft/LightGBM &&\
   cd ./LightGBM && mkdir build && cd build&&\
-  cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda-9.0/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda-9.0/include/ ..&&\
+  cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda-10.0/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda-10.0/include/ ..&&\
   make -j$(nproc)&&\
   cd ../python-package/&&\
   python setup.py install --precompile
